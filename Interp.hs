@@ -1,19 +1,19 @@
 module Interp where
 
 import Parser
+import qualified Data.Map as Map
 
-type State = [(String, Int)]
+type State = Map.Map String Int
 
 updateState :: (String, Int) -> State -> State
-updateState (x, y) [] = [(x,y)]
-updateState (x, y) ((x',y'):xs) = if x == x' then (x,y) : xs else (x',y') : updateState (x,y) xs
+updateState (id, v) s = Map.insert id v s
 
 lookupState :: String -> State -> Int
-lookupState id s = case lookup id s of
+lookupState id s = case Map.lookup id s of
                       Just v -> v
-                      Nothing -> error "variable doesn't exist"
+                      Nothing -> 0
 
-interp com = interpCom com []
+interp com = Map.toList $ interpCom com Map.empty
 
 interpCom :: Com -> State -> State
 interpCom Skip s = s
