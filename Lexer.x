@@ -11,6 +11,8 @@ $digit = [0-9]
 tokens :-
 
 $white+                                                           ;
+"("                                          { \_ -> LPAREN       }
+")"                                          { \_ -> RPAREN       }
 "+"                                          { \_ -> PLUS         }
 "-"                                          { \_ -> MINUS        }
 "*"	                                         { \_ -> MULT         }
@@ -19,7 +21,7 @@ $white+                                                           ;
 "skip"                                       { \_ -> SKIP         }
 ":="                                         { \_ -> ASSIGN       }
 ";"                                          { \_ -> SEMICOLON    }
-"!"                                          { \_ -> NOT          }
+"not"                                        { \_ -> NOT          }
 "&&"                                         { \_ -> AND          }
 "true"                                       { \_ -> TRUE         }
 "false"                                      { \_ -> FALSE        }
@@ -36,6 +38,7 @@ data Token = ID String
             | NUM Int
             | LESS_EQUAL
             | EQUAL
+            | LPAREN | RPAREN
             | ASSIGN | SKIP
             | IF | THEN | ELSE
             | WHILE | DO

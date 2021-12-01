@@ -9,6 +9,8 @@ import Lexer
 
 %token
 
+'('         { LPAREN     }
+')'         { RPAREN     }
 num         { NUM $$     }
 id          { ID $$      }
 '+'         { PLUS       }
@@ -19,7 +21,7 @@ id          { ID $$      }
 skip        { SKIP       }
 '<='        { LESS_EQUAL }
 '='         { EQUAL      }
-'!'         { NOT        }
+not         { NOT        }
 '&&'        { AND        }
 true        { TRUE       }
 false       { FALSE      }
@@ -29,14 +31,29 @@ else        { ELSE       }
 while       { WHILE      }
 do          { DO         }
 
+%nonassoc ':=' '=' '<='
+%nonassoc '&&'
+%nonassoc not
+%right ';'
+%left '+' '-'
+%left '*'
+%nonassoc else
+
 %%
 
 -- Commands
 Com : skip                                                   { Skip         }
     | id ':=' AExp                                           { Assign $1 $3 }
-    | Com ';' Com                                            { Comp $1 $3   }
-    | if BExp then Com else Com                              { If $2 $4 $6  }
-    | while BExp do Com                                      { While $2 $4  }
+    | Com ';' Com                                            { Seq $1 $3    }
+    | if BExp then InnerCom else InnerCom                    { If $2 $4 $6  }
+    | while BExp do InnerCom                                 { While $2 $4  }
+    | '(' Com ')'                                            { $2           }
+
+InnerCom : '(' Com ')'                                       { $2           }
+    | skip                                                   { Skip         }
+    | id ':=' AExp                                           { Assign $1 $3 }
+    | if BExp then InnerCom else InnerCom                    { If $2 $4 $6  }
+    | while BExp do InnerCom                                 { While $2 $4  }
 
 -- Arithmetic Expressions
 AExp : num                                                   { Num $1       }
@@ -44,14 +61,16 @@ AExp : num                                                   { Num $1       }
      | AExp '+' AExp                                         { Plus $1 $3   }
      | AExp '-' AExp                                         { Minus $1 $3  }
      | AExp '*' AExp                                         { Times $1 $3  }
+     | '(' AExp ')'                                          { $2           }
 
 -- Boolean Expressions
 BExp : true                                                  { T True       }
      | false                                                 { T False      }
      | AExp '=' AExp                                         { Eq $1 $3     }
      | AExp '<=' AExp                                        { Leq $1 $3    }
-     | '!' BExp                                              { Not $2       }
+     | not BExp                                              { Not $2       }
      | BExp '&&' BExp                                        { And $1 $3    }
+     | '(' BExp ')'                                          { $2           }
 
 {
 -- Arithmetic Expressions
@@ -73,7 +92,7 @@ data BExp = T Bool
 -- Commands
 data Com = Skip
         | Assign String AExp
-        | Comp Com Com
+        | Seq Com Com
         | If BExp Com Com
         | While BExp Com
    deriving (Eq, Show)
