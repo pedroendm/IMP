@@ -4,16 +4,16 @@ import qualified Data.Map as Map
 
 type State = Map.Map String Int
 
-emptyState :: State
-emptyState = Map.empty
+empty :: State
+empty = Map.empty
 
-updateState :: (String, Int) -> State -> State
-updateState (id, v) s = Map.insert id v s
+update :: String -> Int -> State -> State
+update = Map.insert
 
-lookupState :: String -> State -> Int
-lookupState id s = case Map.lookup id s of
-                      Just v ->  v
-                      Nothing ->  0
+lookup :: String -> State -> Int
+lookup id s = case Map.lookup id s of -- TODO: 0 or error
+            Just v -> v
+            Nothing -> 0
 
-printState :: State -> [(String, Int)]
-printState s = Map.toList s
+toList :: State -> [(String, Int)]
+toList = Map.toList

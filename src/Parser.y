@@ -32,23 +32,27 @@ while       { WHILE      }
 do          { DO         }
 or          { OR         }
 
-%nonassoc ':=' '=' '<='
-%nonassoc and
-%nonassoc not
-%right ';'
+%nonassoc '=' '<=' and not else
 %left '+' '-'
 %left '*'
-%nonassoc else
+%right ';'
+%right or
 
 %%
 
 -- Commands
 Com : skip                                                   { Skip         }
     | id ':=' AExp                                           { Assign $1 $3 }
+    | InnerCom or InnerCom                                   { Or $1 $3     }
+    | if BExp then InnerCom else InnerCom                    { If $2 $4 $6  }
+    | while BExp do InnerCom                                 { While $2 $4  }
+    | '(' Com ')'                                            { $2           }
     | Com ';' Com                                            { Seq $1 $3    }
-    | if BExp then Com else Com                              { If $2 $4 $6  }
-    | while BExp do Com                                      { While $2 $4  }
-    | Com or Com                                             { Or $1 $3     }
+
+InnerCom : skip                                              { Skip         }
+    | id ':=' AExp                                           { Assign $1 $3 }
+    | if BExp then InnerCom else InnerCom                    { If $2 $4 $6  }
+    | while BExp do InnerCom                                 { While $2 $4  }
     | '(' Com ')'                                            { $2           }
 
 -- Arithmetic Expressions
@@ -95,5 +99,5 @@ data Com = Skip
    deriving (Eq, Show)
 
 parseError :: [Token] -> a
-parseError toks = error "parse error"
+parseError toks = error $ "Parse error: " ++ show toks
 }

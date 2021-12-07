@@ -1,3 +1,0 @@
-x := 42;
-y := 0;
-if x = 43 then y := 1 else y := 2

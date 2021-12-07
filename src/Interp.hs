@@ -5,13 +5,13 @@ import State
 import System.Random(randomRIO)
 
 interp :: Com -> IO State
-interp com = interpCom com emptyState
+interp com = interpCom com State.empty
 
 interpCom :: Com -> State -> IO State
 interpCom Skip s = return s
 interpCom (Assign id aexp) s = do
   let n = interpAExp aexp s
-  return $ updateState (id, n) s
+  return $ State.update id n s
 interpCom (Seq com1 com2) s = do
   s' <- interpCom com1 s
   interpCom com2 s'
@@ -29,7 +29,7 @@ interpCom (Or com1 com2) s = do
 
 interpAExp :: AExp -> State -> Int
 interpAExp (Num n)       s = n
-interpAExp (Var id)      s = lookupState id s
+interpAExp (Var id)      s = State.lookup id s
 interpAExp (Plus a1 a2)  s = let a1' = interpAExp a1 s
                                  a2' = interpAExp a2 s
                              in  a1' + a2'

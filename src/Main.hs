@@ -5,5 +5,11 @@ import State
 
 main = do
   source <- getContents
-  state <- fmap printState (interp $ parser $ alexScanTokens source)
-  print state
+  let tokens = alexScanTokens source
+  let ast = parser tokens
+  print ast
+  state <- interp ast
+  print $ State.toList state
+  --state <- fmap State.toList (interp $ parser $ alexScanTokens source)
+  --print state
+  --print $ parser $ alexScanTokens source
