@@ -11,11 +11,11 @@ Some design choices:
 - '=', '<=', 'and', 'not', and 'else' are all non-associative.
 
 # Source files
-Lexer.x: the description of the lexer
-Parser.y: the description of the parser
-Main.hs
-State.hs: definition of a state
-Interp.hs: implementation of the operational semantics
+- Lexer.x: the description of the lexer
+- Parser.y: the description of the parser
+- Main.hs
+- State.hs: definition of a state
+- Interp.hs: implementation of the operational semantics for the language
 
 ## Compilation process
 Within the root folder (IMP/):
@@ -30,7 +30,7 @@ To use the interpreter, just do:
 ```bash
 ./interp < tests/file.imp
 ```
-, where *file.imp* is the program written in the IMP language. 
+, where *file.imp* is a program written in the IMP language. 
 
 ## Tests
 In the test folder, there are 4 testes:
