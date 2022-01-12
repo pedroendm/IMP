@@ -1,5 +1,8 @@
 # Interpreter for the IMP (or WHILE) language
-Fully written in Haskell and with the tools Alex and Happy, for the lexer and parser, respectively.
+
+Implementation of the operational semantics for a small imperative language, called IMP (or WHILE), in the literature, with a non-deterministic operator: the operator 'or'.
+
+The implementation is fully written in Haskell and with the tools Alex and Happy, for the lexer and parser, respectively.
 
 Some design choices:
 - The operators '+', '-' and '*' are left-associative.
